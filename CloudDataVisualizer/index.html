@@ -1,0 +1,147 @@
+<!doctype html>
+<html>
+  <head>
+    <title>LoRaWAN graph</title>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      body { font: 13px Helvetica, Arial; }
+      form { background: #000; padding: 3px; position: fixed; bottom: 0; width: 100%; }
+      form input { border: 0; padding: 10px; width: 90%; margin-right: .5%; }
+      form button { width: 9%; background: rgb(130, 224, 255); border: none; padding: 10px; }
+      #messages { list-style-type: none; margin: 0; padding: 0; }
+      #messages li { padding: 5px 10px; }
+      #messages li:nth-child(odd) { background: #eee; }
+    </style>
+  </head>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+  <!-- <script src="path/to/chartjs/dist/Chart.js"></script> -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
+
+  <script>
+
+  var temperature_data = [];
+  var minutes = -1;
+  var light_data = [];
+  var date = new Date();
+
+  setInterval(function(){
+    if(minutes<0){
+      minutes = date.getUTCMinutes();
+    }
+    minutes ++;
+    if(minutes == 60){
+       minutes = 0;
+    }
+    if(temperature_data.length != 0){
+      addData(temperature_chart, minutes, temperature_data[0]);
+      addData(light_chart, minutes, light_data[0]);
+    }
+   },60*1000);
+
+  $(function () {
+
+    var socket = io();
+
+    socket.on('uplink message', function(msg){
+        if(temperature_data.length >= 10)
+          {
+            temperature_data.pop();
+            light_data.pop();
+          }
+        msg = JSON.parse(msg);
+        temperature_data.unshift(msg.data[1]);
+        light_data.unshift(msg.data[0]);
+      });
+    });
+
+  </script>
+
+  <body>
+
+      <div style="height:510px;width:1000px">
+        <canvas id="temperatureChart"  aria-label="Temperature" ></canvas>
+      </div>
+
+      <div style="height:300px;width:1000px">
+        <canvas id="lightChart"  aria-label="Light" ></canvas>
+      </div>
+
+      <script>
+
+        function addData(chart, label, data) {
+          if(chart.data.labels.length >= 10)
+          {
+            chart.data.labels.shift();
+            chart.data.datasets.forEach((dataset) => {
+            dataset.data.shift();
+          })
+        }
+        chart.data.labels.push(label);
+        chart.data.datasets.forEach((dataset) => {
+          dataset.data.push(data);
+        });
+        chart.update();
+        }
+
+        var ctx1 = document.getElementById("temperatureChart");
+        var temperature_chart = new Chart(ctx1, {
+          type: 'line',
+          data: {
+            labels: [],
+            datasets: [{
+              data: [],
+              label:"Temperature",
+              borderColor: "#00ff00",
+            }]
+          },
+          options: {
+            elements: {
+              line: {
+                tension: 0, // disables bezier curves
+              }
+            },
+            scales: {
+              yAxes: [{
+               ticks: {
+                   suggestedMin: 0,
+                   suggestedMax: 50,
+                   beginAtZero: 1
+               }
+              }]
+            }
+          }
+        });
+
+        var ctx2 = document.getElementById("lightChart");
+        var light_chart = new Chart(ctx2, {
+          type: 'line',
+          data: {
+            labels: [],
+            datasets: [{
+              data: [],
+              label:"Light",
+              borderColor: "#000099",
+            }]
+          },
+          options: {
+            elements: {
+              line: {
+                tension: 0,// disables bezier curves
+              }
+            },
+            scales: {
+              yAxes: [{
+               ticks: {
+                   suggestedMin: 0,
+                   suggestedMax: 50,
+                   beginAtZero: 1
+               }
+              }]
+            }
+          }
+        });
+      </script>
+  </body>
+</html>
