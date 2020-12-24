@@ -10,7 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "chart.js": "^2.7.3",
-    "date-and-time": "^0.6.3",
+    "date-and-time": "^0.14.2",
     "express": "^4.16.4",
     "grpc": "^1.16.0",
     "node-datetime": "^2.1.2",
