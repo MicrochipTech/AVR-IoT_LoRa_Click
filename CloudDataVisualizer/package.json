@@ -14,7 +14,7 @@
     "express": "^4.16.4",
     "grpc": "^1.16.0",
     "node-datetime": "^2.1.2",
-    "socket.io": "^2.1.1",
+    "socket.io": "^2.4.0",
     "ttn": "^2.3.2",
     "yargs": "^12.0.2"
   }
