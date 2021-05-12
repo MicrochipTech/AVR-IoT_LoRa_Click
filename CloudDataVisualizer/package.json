@@ -12,7 +12,7 @@
     "chart.js": "^2.7.3",
     "date-and-time": "^0.6.3",
     "express": "^4.16.4",
-    "grpc": "^1.16.0",
+    "grpc": "^1.24.9",
     "node-datetime": "^2.1.2",
     "socket.io": "^2.1.1",
     "ttn": "^2.3.2",
