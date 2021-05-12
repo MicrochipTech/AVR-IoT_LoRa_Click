@@ -9,7 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "chart.js": "^2.7.3",
+    "chart.js": "^2.9.4",
     "date-and-time": "^0.6.3",
     "express": "^4.16.4",
     "grpc": "^1.16.0",
